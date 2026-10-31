@@ -1,13 +1,16 @@
+document.documentElement.classList.add("js-ready");
+
 const menuToggle = document.querySelector(".menu-toggle");
 const mainNav = document.querySelector("#main-nav");
 const navLinks = mainNav ? mainNav.querySelectorAll("a") : [];
 
-function closeMenu() {
+function closeMenu(returnFocus = false) {
   if (!menuToggle || !mainNav) return;
   menuToggle.setAttribute("aria-expanded", "false");
   menuToggle.setAttribute("aria-label", "Open navigation menu");
   mainNav.classList.remove("is-open");
   document.body.classList.remove("menu-open");
+  if (returnFocus) menuToggle.focus();
 }
 
 if (menuToggle && mainNav) {
@@ -17,14 +20,18 @@ if (menuToggle && mainNav) {
     menuToggle.setAttribute("aria-label", isOpen ? "Open navigation menu" : "Close navigation menu");
     mainNav.classList.toggle("is-open", !isOpen);
     document.body.classList.toggle("menu-open", !isOpen);
+    if (!isOpen) mainNav.querySelector("a")?.focus();
   });
 
-  navLinks.forEach((link) => link.addEventListener("click", closeMenu));
+  navLinks.forEach((link) => link.addEventListener("click", () => closeMenu()));
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeMenu();
+    if (event.key === "Escape" && menuToggle.getAttribute("aria-expanded") === "true") closeMenu(true);
+  });
+  document.addEventListener("click", (event) => {
+    if (menuToggle.getAttribute("aria-expanded") === "true" && !mainNav.contains(event.target) && !menuToggle.contains(event.target)) closeMenu();
   });
   window.addEventListener("resize", () => {
-    if (window.innerWidth > 900) closeMenu();
+    if (window.innerWidth > 760) closeMenu();
   });
 }
 
@@ -60,7 +67,6 @@ if (quoteForm) {
     const service = String(formData.get("service") || "").trim();
     const location = String(formData.get("location") || "").trim();
     const details = String(formData.get("details") || "").trim();
-
     const lines = [
       "Hello AmaPestXscape, I would like to request a quote.",
       "",
