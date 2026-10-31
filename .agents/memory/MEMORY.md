@@ -1,0 +1,1 @@
+- [AmaPestXscape brand sources](amapestxscape-brand-sources.md) — use the company's green-and-gold assets; the Get Pest Control image is layout inspiration only.
